@@ -1,5 +1,25 @@
 # LargeIntegar
 ## Module
+- Input
+	- <font color=green>Basically completed</font>
+- Output
+	- <font color=green>Basically completed</font>
+- Constructor
+	- <font color=green>Basically completed</font>
+- Memory management
+	- <font color=orange>Incomplete</font>
+- Convert with other formats
+	- <font color=green>Basically completed</font>
+- Arithmetic operators
+	- <font color=red>Division and Multiplicaion;</font>
+- Relational operators
+	- <font color=orange>Not Tested</font>
+- Logical operators
+	- <font color=green>Basically completed</font>
+- Subscript operators
+	- <font color=orange>Not needed for now</font>
+
+
 
 ## ToDoList
 - [ ] division;
@@ -27,4 +47,4 @@ But it still very lengthy;
 
 ### 1.0.1.3
 - Added relational operators: (No tested!)
-'<', '>', '>=', '<=', '==', '!=', '!'.
+'<', '>', '>=', '<=', '==', '!='	.

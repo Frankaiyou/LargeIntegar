@@ -5,8 +5,6 @@
 #include <istream>
 #include <stdio.h>
 #include <string>
-#include <stack>
-#include <deque>
 using namespace std;
 
 #define InitSize 30
