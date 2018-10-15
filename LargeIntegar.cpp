@@ -4,6 +4,7 @@
 #include <sstream>
 #include <istream>
 #include <stdio.h>
+#include <string>
 #include <stack>
 #include <deque>
 using namespace std;
@@ -20,36 +21,39 @@ public:
 		Nums = new int[sz], size = sz, EndPos = Nums + sz;
 		std:: fill(Nums, Nums + sz, false);	
 	}
+template <typename Int> 
+	LargeIntegar Convert_Int_to_LargeIntegar(Int integar) {
+		string Str = to_string(integar);
+		return Convert_String_to_LargeIntegar(Str);
+	}
 	void Redistribute_Memory(int sz) {
 		int* NewInt = new int[sz]; EndPos = NewInt + sz;
 		std:: fill(NewInt, NewInt + sz, false);
 		memcpy(Nums, NewInt + sz - size, size * sizeof(int));
 		delete Nums; Nums = NewInt, size = sz; 
 	}
-	friend istream& operator >> (istream &in, LargeIntegar &lInt) {
-		char ch; in >> ch;
-		while (not isdigit(ch)) {
-			if (ch == '-') lInt.Sign = true;
-			ch = getchar();
+	static LargeIntegar Convert_String_to_LargeIntegar(string& Str) {
+		int sz = max(int(Str.size() + 5), InitSize);
+		LargeIntegar Res = LargeIntegar(sz);
+		int *p = Res.EndPos - 1;
+		while (Str[0] == '0' and Str.size() > 1) Str.erase(0, 1);
+		for (int i = Str.size() - 1; i >= 0; i -= 4) {
+			Res.BegPos = p;
+			if (i < 3) {
+				*p = Str[i] - '0', Res.bit += 1;
+				if (i > 1) *p += 10 * (Str[i - 1] - '0'), Res.bit += 1;
+				if (i > 2) *p += 100 * (Str[i - 2] - '0'), Res.bit += 1;
+				break;
+			}
+			*p = Str[i] - '0' + 10 * (Str[i - 1] - '0') + 
+			 	(Str[i - 2] - '0') * 100 + 1000 * (Str[i - 3] - '0');
+			p -= 1, Res.bit += 4;
 		}
-		deque<char> Q;
-		while (isdigit(ch)) {
-			Q.push_back(ch - '0'); 
-			ch = getchar();
-		}
-		while (Q.size() > 2 and Q.front() == 0) Q.pop_front();
-		if (Q.size() / 4 + 1 > lInt.size) 
-			lInt.Redistribute_Memory(max(int(Q.size() / 4 + 1), InitSize));
-		int* now = lInt.EndPos - 1;
-		while (not Q.empty()) {
-			int tmp = 0;
-			if (not Q.empty()) { tmp += Q.back(); Q.pop_back(); lInt.bit += 1; }
-			if (not Q.empty()) { tmp += 10 * Q.back(); Q.pop_back(); lInt.bit += 1; }
-			if (not Q.empty()) { tmp += 100 * Q.back(); Q.pop_back(); lInt.bit += 1; }
-			if (not Q.empty()) { tmp += 1000 * Q.back(); Q.pop_back(); lInt.bit += 1; }
-			*now = tmp, lInt.BegPos = now;
-			now = now - 1;
-		}
+		return Res;
+	}
+	friend istream& operator >> (istream &in, LargeIntegar &Int) {
+		string str; in >> str;
+		Int = Convert_String_to_LargeIntegar(str);
 		return in;
 	}
 	friend ostream& operator << (ostream &out, LargeIntegar &lInt) {
@@ -89,10 +93,9 @@ public:
 		else if (o.Sign) return *this - (-o);
 		else if (Sign) return o - (-(*this));
 		if (*this < o) return o + *this;
-		LargeIntegar Res = LargeIntegar(max(size, o.size) + 10);
+		LargeIntegar Res = LargeIntegar(max(max(bit, o.bit) + 5, InitSize));
 		int *p = EndPos - 1, *q = o.EndPos - 1, *r = Res.EndPos - 1;
 		while (p != BegPos - 1 and q != o.BegPos - 1) {
-			if (p == Nums) Res.Redistribute_Memory(Res.size + 10);
 			*r += *p + *q;
 			if (*r > MaxOfFBit) {
 				*(r - 1) += 1, *r %= MaxOfFBit + 1, 
@@ -102,7 +105,6 @@ public:
 			p -= 1, q -= 1, r -= 1;
 		}
 		while (p != BegPos - 1) {
-			if (p == Nums) Res.Redistribute_Memory(Res.size + 10);
 			*r += *p;
 			if (*r > MaxOfFBit) {
 				*(r - 1) += 1, *r %= MaxOfFBit + 1;
@@ -124,10 +126,9 @@ public:
 		if (Sign and not o.Sign) return -((-(*this) + o));
 		if (Sign and Sign) return ((-o) - (-(*this)));
 		if (*this < o) return -(o - *this);
-		LargeIntegar Res = LargeIntegar(max(size, o.size));
+		LargeIntegar Res = LargeIntegar(max(max(bit, o.bit) + 5, InitSize));
 		int *p = EndPos - 1, *q = o.EndPos - 1, *r = Res.EndPos - 1;
 		while (p != BegPos - 1 and q != o.BegPos - 1) {
-			if (p == Nums) Res.Redistribute_Memory(Res.size + 10);
 			*r += *p - *q;
 			if (*r < 0) *(r - 1) -= 1, *r += MaxOfFBit + 1, Res.BegPos = r - 1;
 			else Res.BegPos = r;
@@ -135,12 +136,14 @@ public:
 			p -= 1, q -= 1, r -= 1;
 		}
 		while (p != BegPos - 1) {
-			if (p == Nums) Res.Redistribute_Memory(Res.size + 10);
 			*r += *p;
-			Res.BegPos = r;
-			Res.bit += CalcBit(*r);
+			if (*r < 0) *(r - 1) -= 1, *r += MaxOfFBit + 1, Res.BegPos = r - 1;
+			else Res.BegPos = r;
+			Res.bit += (p == BegPos ? CalcBit(*r) : 4);
 			p -= 1, r -= 1;
 		}
+		while (*Res.BegPos == 0 and Res.BegPos < Res.EndPos - 1) 
+			Res.BegPos += 1;
 		return Res;
 	}
 };
@@ -148,10 +151,10 @@ public:
 int Test() {
 	LargeIntegar o, b;
 	cin >> o >> b;
-	// cout << o << endl;
-	// cout << b << endl;
-	// printf("If A < B ? %d\n", o < b);
-	o = o + b;
+	cout << o << endl;
+	cout << b << endl;
+	printf("If A < B ? %d\n", o < b);
+	o = o - b;
 	cout << o << endl;
 	return 0;
 }
