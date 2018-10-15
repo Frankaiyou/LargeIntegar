@@ -95,23 +95,14 @@ template <typename Int>
 		if (*this < o) return o + *this;
 		LargeIntegar Res = LargeIntegar(max(max(bit, o.bit) + 5, InitSize));
 		int *p = EndPos - 1, *q = o.EndPos - 1, *r = Res.EndPos - 1;
-		while (p != BegPos - 1 and q != o.BegPos - 1) {
-			*r += *p + *q;
+		while (p != BegPos - 1) {
+			*r += *p + (q == o.BegPos - 1 ? 0 : *q);
 			if (*r > MaxOfFBit) {
 				*(r - 1) += 1, *r %= MaxOfFBit + 1, 
 				Res.BegPos = r - 1, Res.bit += 4;
 			}
 			else Res.BegPos = r, Res.bit += (p == BegPos ? CalcBit(*r) : 4);
-			p -= 1, q -= 1, r -= 1;
-		}
-		while (p != BegPos - 1) {
-			*r += *p;
-			if (*r > MaxOfFBit) {
-				*(r - 1) += 1, *r %= MaxOfFBit + 1;
-				Res.BegPos = r - 1, Res.bit += 4;
-			}
-			else Res.BegPos = r, Res.bit += (p == BegPos ? CalcBit(*r) : 4);
-			p -= 1, r -= 1;
+			p -= 1, q -= (q == o.BegPos - 1 ? 0 : 1), r -= 1;
 		}
 		if (flag) Res.Sign = true;
 		return Res;
@@ -128,19 +119,12 @@ template <typename Int>
 		if (*this < o) return -(o - *this);
 		LargeIntegar Res = LargeIntegar(max(max(bit, o.bit) + 5, InitSize));
 		int *p = EndPos - 1, *q = o.EndPos - 1, *r = Res.EndPos - 1;
-		while (p != BegPos - 1 and q != o.BegPos - 1) {
-			*r += *p - *q;
-			if (*r < 0) *(r - 1) -= 1, *r += MaxOfFBit + 1, Res.BegPos = r - 1;
-			else Res.BegPos = r;
-			Res.bit += (p == BegPos ? CalcBit(*r) : 4);
-			p -= 1, q -= 1, r -= 1;
-		}
 		while (p != BegPos - 1) {
-			*r += *p;
+			*r += *p - (q == o.BegPos - 1 ? 0 : *q);
 			if (*r < 0) *(r - 1) -= 1, *r += MaxOfFBit + 1, Res.BegPos = r - 1;
 			else Res.BegPos = r;
 			Res.bit += (p == BegPos ? CalcBit(*r) : 4);
-			p -= 1, r -= 1;
+			p -= 1, q -= (q == o.BegPos - 1 ? 0 : 1), r -= 1;
 		}
 		while (*Res.BegPos == 0 and Res.BegPos < Res.EndPos - 1) 
 			Res.BegPos += 1;
