@@ -51,6 +51,10 @@ public:
         }
         return Res;
     }
+    template <typename Int>
+    LargeIntegar operator = (const Int& o) {
+    	return *this = Convert_Int_to_LargeIntegar(o);
+    }
     friend istream& operator >> (istream &in, LargeIntegar &Int) {
         string str; in >> str;
         Int = Convert_String_to_LargeIntegar(str);
@@ -75,6 +79,9 @@ public:
         }
         return out;
     }
+    int operator ! () const {
+    	return not(*BegPos);
+    }
     bool operator < (const LargeIntegar& o) const {
         if (not Sign and o.Sign) return false;
         if (Sign and not o.Sign) return true;
@@ -86,6 +93,30 @@ public:
             p = p + 1, q = q + 1;
         }
         return false;
+    }
+    bool operator >= (const LargeIntegar& o) const {
+    	return not (*this < o);
+    }
+    bool operator == (const LargeIntegar& o) const {
+    	if (not Sign and o.Sign) return false;
+        if (Sign and not o.Sign) return false;
+        if (Sign and o.Sign) return false;
+        if (bit != o.bit) return false;
+        int *p = this->BegPos, *q = o.BegPos;
+        while (p != this->EndPos and q != o.EndPos) {
+            if (*p != *q) return false;
+            p = p + 1, q = q + 1;
+        }
+        return true;
+    }
+    bool operator != (const LargeIntegar& o) const {
+    	return not (*this == o);
+    }
+    bool operator > (const LargeIntegar& o) const {
+    	return (*this >= o and not (*this == o));
+    }
+    bool operator <= (const LargeIntegar& o) const {
+    	return not (*this > o);
     }
     LargeIntegar operator + (const LargeIntegar& o) const {
         bool flag = false;
@@ -137,9 +168,10 @@ int Test() {
     cin >> o >> b;
 	cout << o << endl;
 	cout << b << endl;
-// 	printf("If A < B ? %d\n", o < b);
-    o = o + b;
-    cout << o << endl;
+	printf("If A > B ? %d\n", o > b);
+    // o = o + b;
+    // long long a = 123456789123456789ll;
+    cout << (o == b) << endl;
     return 0;
 }
 

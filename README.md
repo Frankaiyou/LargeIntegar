@@ -1,13 +1,5 @@
 # LargeIntegar
-## Completed
-- [x] Input;
-- [x] Output;
-- [x] Compare size;
-- [x] Integar Addition;
-- [x] Integar substruction;
-- [x] Fix the Output that appear Prefix zero;
-- [x] Convert Int32 or Int64 to LargeIntegar;
-- [x] Fix the memory assignation in addition and substruction;
+## Module
 
 ## ToDoList
 - [ ] division;
@@ -17,12 +9,14 @@
 - [ ] Sub or Add is lengthy.
 
 ## 1.0.1
-- Have Fixed the Output that appear Prefix zero;
-Now it will remove the Prefix zero In The Substruction.
-- Modify the way input a LargeIntegar, 
-which input a string and convert it to LargeIntegar.
-- Calculate the memory more reasonable in substruction and addition.
-- Add the new file `histort.cpp`, code that discarded place it here.
+- Fixed the Output that appear Prefix zero;
+Now it will remove the Prefix zero In The Substruction;
+- Modified the way input a LargeIntegar, 
+which input a string and convert it to LargeIntegar;
+- Calculate the memory more reasonable in substruction and addition;
+- Added the new file `histort.cpp`, code that discarded place it here;
+- Added relational operators;
+- Streamline the Add and Sub;
 
 ### 1.0.1.1
 - Streamline the Add and Sub;
@@ -31,3 +25,6 @@ But it still very lengthy;
 ### 1.0.1.2
 - Solve a Bug in `convert_string_to_largeIntegar`;
 
+### 1.0.1.3
+- Added relational operators: (No tested!)
+'<', '>', '>=', '<=', '==', '!=', '!'.
